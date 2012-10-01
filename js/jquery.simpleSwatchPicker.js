@@ -18,76 +18,113 @@
 
   $.fn.simpleSwatchPicker = function(options) {
 
-  	// Default options
+  	// Default settings values
 	var settings = $.extend( {
       'palette'			: 'default',
       'rows'			: 6,
       'cols'			: 12,
-      'saturation'		: [80.0, 100.0],
-      'hue'				: [0.0, 300.0],
-      'value'			: [30.0, 98.0],
+      'saturation'		: [80.0, 100.0, 'rows'],
+      'hue'				: [0.0, 300.0, 'cols'],
+      'value'			: [30.0, 98.0, 'rows'],
+      'selectMessage'	: "click to choose color",
       'swatchContainer'	: ''
     }, options);
 
-	var originalField = this;
+	// Preset palettes. Want to save space? Delete 
+	// the ones you're not using! 
+	var presetPalettes = {
+		'default'	: {
+		},
+		'moody'		: {
+	      'saturation'		: [80.0, 5.0, 'rows'],
+	      'hue'				: [0.0, 300.0, 'cols'],
+	      'value'			: [40.0, 70.0, 'rows']
+		},
+		'primary'	: {
+	      'saturation'		: [100.0, 100.0, 'rows'],
+	      'hue'				: [0.0, 300.0, 'cols'],
+	      'value'			: [50.0, 98.0, 'rows']
+		},
+		'pastel'	: {
+	      'saturation'		: [50.0, 90.0, 'rows'],
+	      'hue'				: [0.0, 300.0, 'cols'],
+	      'value'			: [70.0, 98.0, 'rows']
+		}
+	}
+
+	// Load presets if called for
+	$.extend(settings, presetPalettes[settings['palette']]);
 
     return this.each(function() {
 
-      // Attach picker to form field
-      var ssp;
-      if (settings['swatchContainer'] == '') {
-      	ssp = $('<div class="simpleSwatchPicker"></div>').insertAfter(this);
-      } else {
-      	ssp = $(settings['swatchContainer']);
-      }
+		var originalField = this;
 
-      // Add selected swatch and palette
-      ssp.append('<div class="sspSelectedChip"></div><div class="sspPalette"></div>');
-      var selectChip 	= ssp.find('.sspSelectedChip').first();
-      var palette 		= ssp.find('.sspPalette').first();
+		// Attach picker to form field
+		var ssp;
+		if (settings['swatchContainer'] == '') {
+			ssp = $('<div class="simpleSwatchPicker"></div>').insertAfter(this);
+		} else {
+			ssp = $(settings['swatchContainer']);
+		}
 
-      for (var r = 0; r < settings['rows']; r++) {
-	      for (var c = 0; c < settings['cols']; c++) {
-		    var h = getComponent('hue', 'cols', c);
-		    var s = getComponent('saturation', 'rows', r);
-		    var v = getComponent('value', 'rows', r);
-	      	palette.append('<div class="sspChip" style="background-color: hsl(' + h + ',' + s + '%, ' + v + '%);"></div>');
-	      }
-      }
+		// Add selected swatch and palette
+		ssp.append('<div class="sspSelectedChip"></div><div class="sspPalette"></div>');
+		var selectChip 	= ssp.find('.sspSelectedChip').first();
+		var palette 	= ssp.find('.sspPalette').first();
 
-      // Set palette size for # of rows, cols
-      var chipSize = ssp.find('.sspChip').first();
-      palette.css({
-      	'width' : (chipSize.outerWidth() * settings['cols']) + "px",
-      	'height' : (chipSize.outerHeight() * settings['rows']) + "px",
-      	'left' : selectChip.position().left + selectChip.outerWidth()
-      });
+		for (var r = 0; r < settings['rows']; r++) {
+		  for (var c = 0; c < settings['cols']; c++) {
+		    var h = getComponent('hue', c, r);
+		    var s = getComponent('saturation', c, r);
+		    var v = getComponent('value', c, r);
+		  	palette.append('<div class="sspChip" style="background-color: hsl(' + h + ',' + s + '%, ' + v + '%);"></div>');
+		  }
+		}
 
-      // Add palette toggle action
-      selectChip.click(function(){
-      	palette.slideToggle();
-      });
+		// Set palette size for # of rows, cols
+		var chipSize = ssp.find('.sspChip').first();
+		palette.css({
+			'width' : (chipSize.outerWidth() * settings['cols']) + "px",
+			'height' : (chipSize.outerHeight() * settings['rows']) + "px",
+			'left' : selectChip.position().left + selectChip.outerWidth()
+		});
 
-      // Add color selection action
-      ssp.find('.sspChip').click(function(){
-      	var newColor = rgb2hex($(this).css('background-color'));
-      	// Change swatch
-      	selectChip.css({
-      		'background-color': newColor
-      	});
-      	// Change value of original form field
-      	$(originalField).val(newColor);
-      	// Hide palette
-      	palette.slideUp();
-      });
+		// Load initial content
+		if($(originalField).val() == '') {
+			selectChip.append("<span>" + settings['selectMessage'] + "</span>");
+		} else {
+			selectChip.css({
+				'background-color': $(originalField).val()
+			}).html("");
+		}
 
-      // Find the current component along its range given position in palette
-      function getComponent(component, direction, current) {
-      	var step = (settings[component][1] - settings[component][0]) / settings[direction];
-      	return parseInt((current * step) + settings[component][0]);
-      }
+		// Add palette toggle action to main chip
+		selectChip.click(function(){
+			palette.slideToggle();
+		});
 
-		// Function to convert JQuery rgb color to a hex
+		// Add color selection action to little chips
+		ssp.find('.sspChip').click(function(){
+			var newColor = rgb2hex($(this).css('background-color'));
+			// Change swatch & empty it out
+			selectChip.css({
+				'background-color': newColor
+			}).html("");
+			// Change value of original form field
+			$(originalField).val(newColor);
+			// Hide palette
+			palette.slideUp();
+		});
+
+		// Find the current component along its range given position in palette
+		function getComponent(component, col, row) {
+			var axis = settings[component][2];
+			var current = (axis == 'cols') ? col : row;
+			var step = (settings[component][1] - settings[component][0]) / settings[axis];
+			return parseInt((current * step) + settings[component][0]);
+		}
+
+		// Function to convert JQuery rgb color to a hex (for storage)
 		// (Thx R0bb13!) http://markmail.org/message/hilbsejsl4zxwlv6#query:+page:1+mid:hilbsejsl4zxwlv6+state:results
 		function rgb2hex(rgb){
 			rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);

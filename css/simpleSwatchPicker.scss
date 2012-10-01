@@ -1,30 +1,52 @@
-$swatchBorder: #eee;
-$selectedChipWidth: 2em;
-$selectedChipHeight: 2em;
-$paletteChipWidth: 0.5em;
+$swatchBorder: #ccc;
+$swatchBorderHighlight: #bbb;
+$selectedChipWidth: 3em;
+$selectedChipHeight: 3em;
+$paletteChipWidth: 1em;
 $paletteChipHeight: 1em;
 
 .simpleSwatchPicker {
-	position: relative;
-	width: 2em;
-	height: 2em;
+	position: relative !important;
+	width: $selectedChipWidth;
+	height: $selectedChipHeight;
 	.sspSelectedChip {
 		position: relative;
 		width: $selectedChipWidth;
 		height: $selectedChipHeight;
 		border: 1px solid $swatchBorder;
 		background-color: white;
+		overflow: hidden !important;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		span {
+			display: block;
+			text-align: center;
+			font-size: 0.5em;
+			font-family: sans-serif;
+			font-style: italic;
+			line-height: 1;
+			padding-top: 1em;
+		}
+	}
+	.sspSelectedChip:hover {
+		border-color: $swatchBorderHighlight;
 	}
 	.sspChip {
 		width: $paletteChipWidth;
 		height: $paletteChipHeight;
 		border-left: 1px solid $swatchBorder;
 		border-top: 1px solid $swatchBorder;
-		float: left;
+		float: left !important;
+	}
+	.sspChip:hover {
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
 	}
 	.sspPalette {
-		position: absolute;
-		top: 0;
+		position: absolute !important;
+		top: 0 !important;
 		display: none;
 		/* h, w will be set by script to fit rows, cols */
 		border-right: 1px solid $swatchBorder;

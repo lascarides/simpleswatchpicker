@@ -30,3 +30,17 @@ To add a Simple Swatch Picker to this hidden field:
 Add this code to your page:
 
 $("#myField").simpleSwatchPicker();
+
+
+You should use it if...
+-----------------------
+
+* You want to add a color picker quickly
+* You want a range of colors, but don't care which specific ones
+
+You should not use it if...
+---------------------------
+
+* You want more functionality than is here (an eyedropper, a hex converter, etc)
+* You want a specific palette of hex-perfect colors
+
