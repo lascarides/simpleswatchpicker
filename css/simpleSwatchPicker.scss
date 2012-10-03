@@ -26,7 +26,8 @@ $paletteChipHeight: 1em;
 			font-family: sans-serif;
 			font-style: italic;
 			line-height: 1;
-			padding-top: 1em;
+			padding: 1em;
+			color: #000;
 		}
 	}
 	.sspSelectedChip:hover {
@@ -47,7 +48,9 @@ $paletteChipHeight: 1em;
 	.sspPalette {
 		position: absolute !important;
 		top: 0 !important;
+		z-index: 10000 !important;
 		display: none;
+		background: white;
 		/* h, w will be set by script to fit rows, cols */
 		border-right: 1px solid $swatchBorder;
 		border-bottom: 1px solid $swatchBorder;

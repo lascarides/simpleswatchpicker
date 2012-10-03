@@ -23,9 +23,9 @@
       'palette'			: 'default',
       'rows'			: 6,
       'cols'			: 12,
-      'saturation'		: [80.0, 100.0, 'rows'],
+      'saturation'		: [70.0, 100.0, 'rows'],
       'hue'				: [0.0, 300.0, 'cols'],
-      'value'			: [30.0, 98.0, 'rows'],
+      'value'			: [40.0, 98.0, 'rows'],
       'selectMessage'	: "click to choose color",
       'swatchContainer'	: ''
     }, options);
@@ -35,10 +35,16 @@
 	var presetPalettes = {
 		'default'	: {
 		},
+		'warm'		: {
+	      'hue'				: [0.0, 60.0, 'cols']
+		},
+		'cool'		: {
+	      'hue'				: [150.0, 280.0, 'cols']
+		},
 		'moody'		: {
-	      'saturation'		: [80.0, 5.0, 'rows'],
+	      'saturation'		: [80.0, 12.0, 'rows'],
 	      'hue'				: [0.0, 300.0, 'cols'],
-	      'value'			: [40.0, 70.0, 'rows']
+	      'value'			: [30.0, 70.0, 'rows']
 		},
 		'primary'	: {
 	      'saturation'		: [100.0, 100.0, 'rows'],
